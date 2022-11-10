@@ -1,0 +1,28 @@
+
+body {
+  background-color: rgb(160, 160, 160);
+}
+
+h1 {
+  text-align: center;
+}
+
+.container-image {
+  display: flex;
+  justify-content: center;
+}
+
+.container-image img {
+  width: 500px;
+  
+}
+.container-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.container-names {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  text-align: center;
+}
