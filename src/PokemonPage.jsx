@@ -1,29 +1,47 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { getPokemons } from "./store/Slices/thunks";
+import {  getPokemons } from "./store/Slices/thunks";
 
 export const PokemonPage = () => {
 
-    let lastPage = ''
-
     const dispatch = useDispatch();
-    const { isLoading, pokemones, page } = useSelector( state => state.pokemon );
-    const [lista, setLista] = useState(page)
-
+    const { isLoading, pokemones } = useSelector( state => state.pokemon );
+    const [page, setPage] = useState(0)
+    
+    console.log('POKEMONES EN LA PAGE: ', pokemones )
+    //console.log('Hola', pokemones[0].name )
     useEffect(() => {
-        dispatch( getPokemons())
+        dispatch( getPokemons(page))
     }, [])
     
-    const restList = ( event, page) => {
-        setLista( lista - 1)
-        dispatch( getPokemons( lista ))
+    const pageMas = () => {
+        const newPage = page + 1 * (pokemones.length)
+        dispatch( getPokemons( newPage ))
+        setPage( newPage )
     }
 
+    const pageMenos = () => {
+        const newPage =  page - pokemones.length
+        dispatch( getPokemons( newPage ))
+        setPage( newPage )
+    }
+
+    const lista = () => {
+        const newArrayPoke = pokemones.map( (pokemon, index) => {
+            let imagen = pokemon.img
+            let pokeName = pokemon.name
+            return <div key={ index }> 
+                <p> { pokeName} </p>
+                <img src={ imagen } alt="image" />
+            </div>
+        } )
+        return newArrayPoke
+    }
 
     return (
     <>
     <div className="container-title">
-      <h1> Test </h1>
+      <h1> Test </h1> 
     </div>
     
     <div className="container-image">
@@ -31,32 +49,35 @@ export const PokemonPage = () => {
     </div>
     <hr />
 
-    <h3> Loading: { isLoading? 'True' : 'False' } </h3>
-    <h3> Lista: { lista } </h3>
+
+    { isLoading? 
+        <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div> : '' 
+    } 
+
     <h3> Page: { page } </h3>
 
     <div className="container-names" >
             {
-                pokemones.map( pokemon => (
-                    <div key={pokemon.name}> 
-                        <p> { pokemon.name } </p> 
-                        {/* <img src={ pokemon.results.sprites.front_default } alt="" /> */}
-                    </div>
-                ) )
+                lista()
             }
     </div>
 
     <div className="container-buttons">
-        <button 
+        <button
+            disabled = { page <= 0 } 
             className="btn btn-primary"
-            onClick={ restList }
+            onClick={ pageMenos }
         >
             Lista anterior
         </button>
         <button 
             disabled = { isLoading }
             className="btn btn-primary"
-            onClick={ () => dispatch( getPokemons(page))}
+            onClick={ pageMas }
         >
             Siguiente lista 
         </button>
